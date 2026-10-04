@@ -2,8 +2,6 @@ import pandas as pd
 
 from analyzer import df
 
-from ds import df_test
-
 from datetime import date
 
 allowed_cat_values = pd.read_csv('allowed_values.csv')
@@ -17,8 +15,12 @@ numeric_columns = {'year','price_rub','engine_l','mileage_km'}
 categorial_columns = {'city','brand','model','fuel','transmission'}
 
 def isnumeric_data(column):
-    if not pd.api.types.is_numeric_dtype(column):
-        return column.name
+    if column.name == 'engine_l':
+        if not pd.api.types.is_float_dtype(column):
+            return column.name
+    else:
+        if not pd.api.types.is_integer_dtype(column):
+            return column.name
     
 def iscategorial_data(column):
     if not pd.api.types.is_string_dtype(column):
@@ -32,40 +34,31 @@ def check_data(column):
         
 def check_numeric_data(column):
     if column.name == 'year':
-        if any(x <= 1920 or x > date.today().year for x in column):
-            #print(f'Некорректынй год авто: {column.loc[(column <=1920) | (column > date.today().year)].index.tolist()}')
-            return {column.name : column.loc[(column <=1920) | (column > date.today().year)].index.tolist()}
-        #else: return []
+        if any(x <= 1920 or x > date.today().year for x in column) or column.isnull().any():
+            return {column.name : (column.loc[(column <=1920) | (column > date.today().year)].index.tolist() + column.isnull().index.tolist())}
             
     elif column.name == 'engine_l':
-        if any(x <=0 or x >10.0 for x in column):
-            #print(f'Некорректный объем двигателя: {column.loc[(column <=0) | (column > 10.0)].index.tolist()}')
-            return {column.name : column.loc[(column <=0) | (column >10)].index.tolist()}
-        #else: return []
+        if any(x <=0 or x >10.0 for x in column) or column.isnull().any():
+            return {column.name : (column.loc[(column <=0) | (column >10)].index.tolist() + column.isnull().index.tolist())}
             
     elif column.name == 'mileage_km':
-        if any(x <=0 or x > 1000000 for x in column):
-            #print(f'Некорректный пробег: {column.loc[(column <= 0) | (column > 1000000)].index.tolist()}')
-            return {column.name : column.loc[(column <= 0) | (column > 1000000)].index.tolist()}
-        #else: return []
+        if any(x <=0 or x > 1000000 for x in column) or column.isnull().any():
+            return {column.name : (column.loc[(column <= 0) | (column > 1000000)].index.tolist() + column.isnull().index.tolist())}
             
     elif column.name == 'price_rub':
-        if any(x <=0 for x in column):
-            #print(f'Некорреткная цена: {column.loc[column <= 0].index.tolist()}')
-            return {column.name : column.loc[column <= 0].index.tolist()}
-        #else: return []
+        if any(x <=0 for x in column) or column.isnull().any():
+            return {column.name : (column.loc[column <= 0].index.tolist() + column.isnull().index.tolist())}
 
     return []                
 
 def check_categorial_data(column):
     s = set(allowed_cat_values['value'].loc[allowed_cat_values['column'] == column.name])
-    if any(x not in s for x in column):
+    if any(x not in s for x in column) or column.isnull().any():
         wrong_v = {}
         for x in column:
             if x not in s:
-                wrong_v.update({column.name :column.loc[column == x].index.item()})     
+                wrong_v.update({column.name : (column.loc[column == x].index.tolist() + column.isnull().index.tolist())})     
         return wrong_v
-    #else: return []
 
 def check_combinations(c1,c2):
     key_name = (c1.name,c2.name)
@@ -80,13 +73,11 @@ def check_combinations(c1,c2):
         else:
             indexes = []
             for i in range(len(c1)):
-                    if str(c1[i])+str(c2[i]) in wrong_combinations:
+                    if str(c1.iloc[i])+str(c2.iloc[i]) in wrong_combinations:
                         indexes.append(i)
             return indexes
     else: return {}
-    
-d_test = df_test
-#print(d_test)
+
 def validate_data(d):
     d.drop_duplicates(inplace = True)
     
@@ -122,27 +113,30 @@ def validate_data(d):
             d[x] = d[x].fillna(d[x].dropna().mode()[0])
     if wrong_numeric_datatype:
         for x in wrong_numeric_datatype:
-            d[x] = pd.to_numeric(d[x],errors='coerce')
-            if pd.api.types.is_float_dtype(d[x]):
-                a =1
-            else: a =0
+            if x == 'engine_l':
+                a = 1
+            else: a = 0
 
             if d[x].notnull().any():
                 d[x] = d[x].fillna(round(d[x].dropna().mean(),a))
             else:
                 if x == 'year':
-                    d[x] = d[x].fillna(2000)
+                    d[x] = d[x].fillna(2009).astype(int)
                 elif x == 'engine_l':
                     d[x] = d[x].fillna(1.6)
                 elif x == 'mileage_km':
-                    d[x] = d[x].fillna(500000)
+                    d[x] = d[x].fillna(500000).astype(int)
                 elif x == 'price_rub':
-                    d[x] = d[x].fillna(1000000)
+                    d[x] = d[x].fillna(1000000).astype(int)
+            if x != 'engine_l':
+                d[x] = d[x].astype(int)
 
     data_replace_indexes = {}
+    
     for n in d:
         if n == 'id':
             continue
+        
         r = check_data(d[n])
         if r:
             data_replace_indexes.update(r)
@@ -169,7 +163,7 @@ def validate_data(d):
         else:
             if pd.api.types.is_float_dtype(d[k]):
                 a = 1
-            else: a =0
+            else: a = 0
             
             if d[k].drop(v).empty:
                 if k == 'year':
@@ -185,8 +179,7 @@ def validate_data(d):
                     for x in v:
                         d.loc[x,k] = round(d[k].drop(v).mean(),a)
                 else:d.loc[v,k] = round(d[k].drop(v).mean(),a)
-            
-        
+                
     data_del_indexes = []
     
     for key in allowed_combinations:
@@ -195,9 +188,7 @@ def validate_data(d):
     data_del_indexes = list(set([i for sl in data_del_indexes for i in sl]))
       
     d.drop(data_del_indexes,inplace = True)
+    
+    d.reset_index(inplace = True,drop = True)
          
     return d 
-        
-validate_data(d_test)
-
-print(d_test)
