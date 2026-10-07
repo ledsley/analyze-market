@@ -2,10 +2,6 @@ import matplotlib.pyplot as plt
 
 import numpy as np
 
-from analyzer import df
-
-from stats import calculate_price_by_year,range_mileage,brand_stats
-
 plt.style.use('_mpl-gallery')
 
 def vizualize_price_by_year(s):
@@ -103,4 +99,30 @@ def visualize_brands(d):
 
     plt.tight_layout()
     plt.subplots_adjust(right=0.97,left=0.05,top=0.962,bottom=0.043)
+    plt.show()
+
+def visualize_stat_fuel_transmission_city(d_fuel,d_transmission,d_city):
+    labels_fuel = d_fuel.index.tolist()
+    sizes_fuel = d_fuel.tolist()
+
+    labels_transmission = d_transmission.index.tolist()
+    sizes_transmission = d_transmission.tolist()
+
+    labels_city = d_city.index.tolist()
+    sizes_city = d_city.tolist()
+
+    fig,(ax_fuel,ax_transmission,ax_city) = plt.subplots(nrows=1,ncols=3,figsize = (6,6))
+
+    ax_f = ax_fuel.pie(sizes_fuel,labels = labels_fuel)
+    ax_fuel.pie_label(ax_f,labels= '{absval:d}')
+    ax_fuel.set_title('Количество машин каждого типа топлива')
+
+    ax_t = ax_transmission.pie(sizes_transmission,labels = labels_transmission)
+    ax_transmission.pie_label(ax_t,labels = '{absval:d}')
+    ax_transmission.set_title('Количество машин каждого типа КПП')
+
+    ax_c = ax_city.pie(sizes_city,labels = labels_city)
+    ax_city.pie_label(ax_c,labels = '{absval:d}')
+    ax_city.set_title('Количество машин в каждом городе')
+
     plt.show()
