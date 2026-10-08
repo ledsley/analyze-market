@@ -192,3 +192,18 @@ def validate_data(d):
     d.reset_index(inplace = True,drop = True)
          
     return d 
+
+def convert_to_api_all(d, brand_name:str | None, fuel:str | None, year_min:int | None, year_max:int | None):
+    if fuel:
+        d = d.loc[d['fuel'] == fuel]
+        
+    if brand_name:
+        d = d.loc[d['brand'] == brand_name]
+        
+    if year_min is not None:
+        d = d.loc[d['year'] >= year_min]
+        
+    if year_max is not None:
+        d = d.loc[d['year'] <= year_max]
+            
+    return d.to_dict('records')

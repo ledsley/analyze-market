@@ -1,4 +1,8 @@
 import pandas as pd
+
+from analyzer import df
+
+from ds import df_test_nans
     
 def calculate_stat(d):
     stat = d.agg(
@@ -34,3 +38,28 @@ def stat_cat(d,column_name):
     stat = d[column_name].value_counts()
     
     return stat
+
+def convert_to_api_stat(d):
+    res = calculate_stat(d)
+
+    v = dict()
+    for idx,row in res.iterrows():
+        v[idx] = row.dropna().item()
+        
+    return v
+
+def convert_to_api_brands_stats(d,brand_name:str):
+    res = brand_stats(d)
+    idxs = set(res.index.tolist())
+    if not brand_name:
+        vals = dict()
+        for idx,row in res.iterrows():
+            vals[idx] = row.to_dict()
+            
+        return vals
+    
+    elif brand_name in idxs:
+        vals = dict()
+        vals[brand_name] = res.loc[brand_name].to_dict()
+
+        return vals
