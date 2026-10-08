@@ -1,0 +1,5 @@
+﻿id,brand,model,year,mileage_km,engine_l,fuel,transmission,city,price_rub
+1,Ford,Focus,2008,214393,1.6,petrol,manual,Taganrog,683286
+3,Honda,Civic,2019,104277,2.4,petrol,manual,Saint-Petersburg,946000
+6,Honda,Civic,2022,104277,1.2,petrol,manual,Saint-Petersburg,1142000
+11,Kia,Cerato,2014,28331,1.2,petrol,manual,Voronezh,623000

@@ -1,0 +1,6 @@
+﻿id,brand,model,year,mileage_km,engine_l,fuel,transmission,city,price_rub
+1,Ford,Focus,2009,214393,1.6,petrol,manual,Taganrog,180000
+4,Kia,Rio,2009,130785,1.6,petrol,manual,Moscow,781000
+5,Kia,Ceed,2009,114104,1.6,petrol,automatic,Saint-Petersburg,380000
+8,Kia,Ceed,2009,138858,2.4,diesel,manual,Moscow,506000
+10,Ford,Focus,2009,141178,1.8,petrol,automatic,Saint-Petersburg,366000
