@@ -1,9 +1,5 @@
 import pandas as pd
-
-from analyzer import df
-
-from ds import df_test_nans
-    
+   
 def calculate_stat(d):
     stat = d.agg(
         count = ('price_rub','count'),
