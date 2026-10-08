@@ -1,0 +1,11 @@
+id,brand,model,year,mileage_km,engine_l,fuel,transmission,city,price_rub
+1,Ford,Focus,abc,214393,1.6,petrol,manual,Taganrog,180000
+2,Kia,Cerato,abc,28331,1.2,petrol,manual,Voronezh,623000
+3,Honda,Civic,abc,190363,2.4,petrol,manual,Voronezh,946000
+4,Kia,Rio,abc,130785,1.6,petrol,manual,Moscow,781000
+5,Kia,Ceed,abc,114104,1.6,petrol,automatic,Saint-Petersburg,380000
+6,Honda,Civic,abc,119230,1.2,petrol,automatic,Voronezh,1142000
+7,Honda,Civic,abc,38233,1.2,petrol,automatic,Taganrog,1089000
+8,Kia,Ceed,abc,138858,2.4,diesel,manual,Moscow,506000
+9,Ford,Fiesta,abc,265538,2.4,petrol,automatic,Rostov,703000
+10,Ford,Focus,abc,141178,1.8,petrol,automatic,Saint-Petersburg,366000
