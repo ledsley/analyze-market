@@ -2,11 +2,9 @@ from fastapi import FastAPI
 from fastapi import HTTPException
 from datetime import date
 
-from analyzer import df, df_mini
+from dataframes import clear_df,clear_df_mini
 
-from ds import df_test,df_test_nans
-
-from fucntions import convert_to_api_all #convert_to_api_cars
+from validation import convert_to_api_all
 
 from stats import convert_to_api_stat,convert_to_api_brands_stats
 
@@ -24,36 +22,36 @@ def register_endpoints(app: FastAPI):
         
         if year_max is not None:
             if year_max < 1920 or year_max > current_year:
-                raise HTTPException(status_code=400, detail=f'Некорректное ограничение максимального года: {year_max}') 
+                raise HTTPException(status_code=400, detail=f'Некорректное значение максимального года: {year_max}') 
             
         if year_min is not None:
             if year_min > current_year or year_min < 1920:
-                raise HTTPException(status_code=400,detail=f'Некорректное ограничение минимального года: {year_min}')
+                raise HTTPException(status_code=400,detail=f'Некорректное значение минимального года: {year_min}')
             
         if (year_min is not None) and (year_max is not None):
             if year_min > year_max:
                 raise HTTPException(status_code=400, detail='Минимальный год не может быть больше максимального года')
             
-        r = convert_to_api_all(df_mini,brand,fuel,year_min,year_max)
+        r = convert_to_api_all(clear_df_mini,brand,fuel,year_min,year_max)
         if r:
             return r
         
-        else: raise HTTPException(status_code=404, detail='Неправильно передан фильтр или такое знеачение отсутвует')
+        else: raise HTTPException(status_code=404, detail='Неправильно передан фильтр или такое значение отсутвует')
 
     @app.get('/stats')
     
     async def get_stats():
-        return convert_to_api_stat(df_test_nans)
+        return convert_to_api_stat(clear_df_mini)
     
     @app.get('/stats/brands')
     
     async def get_stats_brand():
-        return convert_to_api_brands_stats(df_mini,'')
+        return convert_to_api_brands_stats(clear_df_mini,'')
     
     @app.get('/stats/brands/{brand}')
     
     async def get_stats_brand_choose(brand: str):
-        r = convert_to_api_brands_stats(df_mini,brand)
+        r = convert_to_api_brands_stats(clear_df_mini,brand)
         if r:
             return r
         else:
