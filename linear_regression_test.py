@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split,cross_val_score
 from sklearn.metrics import mean_absolute_error,root_mean_squared_error,r2_score
 
 
-from main_dataframe import clear_df
+from main_dataset import clear_df
 
 X = clear_df.drop(columns = ['id','price_rub'])
 y = clear_df['price_rub']
