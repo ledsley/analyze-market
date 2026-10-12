@@ -4,7 +4,7 @@ from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.model_selection import train_test_split
 import joblib
-from main_dataframe import clear_df
+from main_dataset import clear_df
 from pathlib import Path
 
 X = clear_df.drop(columns = ['id','price_rub'])
