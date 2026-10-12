@@ -1,14 +1,18 @@
 import pandas as pd
-
-df = pd.read_csv('cars_dataset.csv')
-
 from datetime import date
+from pathlib import Path
 
-allowed_cat_values = pd.read_csv('allowed_values.csv')
+base_dir = Path(__file__).resolve().parent
 
-allowed_combinations = {('brand','model') :set(df['brand'] + ',' + df['model']), 
-                        ('engine_l','fuel') : set(df['engine_l'].astype(str) + ',' + df['fuel']),
-                        ('model','year'): set(df['model'] + ',' + df['year'].astype(str))}
+cars_dataset = base_dir /'cars_dataset.csv'
+
+allowed_values_file = base_dir / 'allowed_values.csv'
+
+df = pd.read_csv(cars_dataset)
+
+allowed_cat_values = pd.read_csv(allowed_values_file)
+
+allowed_combinations = {('brand','model') :set(df['brand'] + ',' + df['model'])}
 
 numeric_columns = {'year','price_rub','engine_l','mileage_km'}
 
